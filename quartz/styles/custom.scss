@@ -1,3 +1,18 @@
 @use "./base.scss";
 
 // put your custom CSS here!
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+thead {
+  font-weight: 300;
+}
+
+.folder-container {
+    & div > button > span {
+        font-weight: 300;
+    }
+}
