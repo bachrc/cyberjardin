@@ -53,23 +53,22 @@ jobs:
     permissions:
       contents: read # required for publishing Docker images
       packages: write # required for pushing Docker images
+
     
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - uses: uraimo/run-on-arch-action@v2
-        name: Run commands
-        id: runcmd
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Cache Docker layers
+        uses: actions/cache@v2
         with:
-          arch: armv7
-          distro: ubuntu22.04
-
-          # Not required, but speeds up builds by storing container images in
-          # a GitHub package registry.
-          githubToken: ${{ github.token }}
-
-          # Set an output parameter `uname` for use in subsequent steps
-      
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
       - name: Log in to the Container Registry
         uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
         with:
@@ -90,3 +89,4 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          platforms: linux/amd64,linux/arm64/v8
