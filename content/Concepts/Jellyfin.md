@@ -1,0 +1,3 @@
+Jellyfin est une application fonctionnant sur de nombreux supports : Android, télévisions, iOS, web...
+
+Elle vous permet de regarder, comme sur Netflix, de nombreuses séries et films qui sont disponibles sur la médiathèque.
