@@ -69,9 +69,7 @@ jobs:
           githubToken: ${{ github.token }}
 
           # Set an output parameter `uname` for use in subsequent steps
-          run: |
-            uname -a
-            echo ::set-output name=uname::$(uname -a)
+      
       - name: Log in to the Container Registry
         uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
         with:
