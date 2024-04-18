@@ -1,0 +1,1 @@
+Le Cyber Coffre est une instance de [[Bitwarden]], qui stocke en local et de manière 100% chiffrée vos mots de passes.
