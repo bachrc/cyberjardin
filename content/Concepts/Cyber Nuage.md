@@ -13,3 +13,4 @@ Voici les différents services mis à disposition. Cette liste des vouée à év
 - [[Cyber Social|Le Cyber Social - Un Twitter Décentralisé]]
 - [[Cyber Forge|La Cyber Forge - Hébergement de votre code source]]
 - [[Cyber Porte-Documents|Le Cyber Porte-Documents - L'archive de vos documents importants]]
+- [[Cyber Babillage|Le Cyber Babillage - Une messagerie instantanée]]
