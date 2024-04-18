@@ -27,7 +27,7 @@ jobs:
           fetch-depth: 0 # Fetch all history for git info
       - uses: actions/setup-node@v3
         with:
-          node-version: 18.14
+          node-version: 20.12.2
       - name: Install Dependencies
         run: npm ci
       - name: Build Quartz
@@ -57,7 +57,21 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - uses: uraimo/run-on-arch-action@v2
+        name: Run commands
+        id: runcmd
+        with:
+          arch: armv7
+          distro: ubuntu22.04
 
+          # Not required, but speeds up builds by storing container images in
+          # a GitHub package registry.
+          githubToken: ${{ github.token }}
+
+          # Set an output parameter `uname` for use in subsequent steps
+          run: |
+            uname -a
+            echo ::set-output name=uname::$(uname -a)
       - name: Log in to the Container Registry
         uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
         with:
