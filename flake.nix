@@ -18,13 +18,9 @@
     devShells = eachSystem (pkgs: {
       default = pkgs.mkShell {
         buildInputs = [
-          pkgs.nodejs_21
+          pkgs.nodejs_20
           pkgs.nil
-
-          # You can choose pnpm, yarn, or none (npm).
-          pkgs.nodePackages.pnpm
-          
-          pkgs.mask
+          pkgs.just
         ];
       };
     });
