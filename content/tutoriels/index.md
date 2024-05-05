@@ -1,3 +1,3 @@
 ---
-title: Tutoriels
+title: Tutoriels et guides
 ---
