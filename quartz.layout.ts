@@ -63,13 +63,13 @@ function filterExplorerExclusions(node: FileNode): boolean {
   // exclude files with the tag "explorerexclude"
   if (node.file) {
     // It's a file
-    return node.file?.frontmatter?.tags?.includes("explorerexclude") !== true
+    return node.file?.frontmatter?.tags?.includes("explorerexcluded") !== true
   } else {
     // It's a folder
     let indexFile = node.children.find((node) => node.name === "index")
 
     if (indexFile) {
-      return indexFile?.file?.frontmatter?.tags?.includes("explorerexclude") !== true
+      return indexFile?.file?.frontmatter?.tags?.includes("explorerexcluded") !== true
     }
 
     return true

@@ -12,7 +12,7 @@ const config: QuartzConfig = {
     enableSPA: true,
     enablePopovers: true,
     analytics: {
-      provider: "plausible",
+      provider: "umami", host: 'jardin.cyberendroit.net', websiteId: '32c68169-1b7c-46d0-ac8e-deed36b86600' 
     },
     locale: "fr-FR",
     baseUrl: "jardin.cyberendroit.net",

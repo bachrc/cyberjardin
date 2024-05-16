@@ -1,5 +1,6 @@
 ---
 title: Cyber Cubes
+tags: []
 ---
 Les Cyber Cubes sont un serveur Minecraft disponible pour quelques élu•e•s. 
 
