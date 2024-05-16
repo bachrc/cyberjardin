@@ -1,5 +1,6 @@
 import { PageLayout, SharedLayout } from "./quartz/cfg"
 import * as Component from "./quartz/components"
+import { FileNode } from "./quartz/components/ExplorerNode"
 
 // components shared across all pages
 export const sharedPageComponents: SharedLayout = {
@@ -7,7 +8,7 @@ export const sharedPageComponents: SharedLayout = {
   header: [],
   footer: Component.Footer({
     links: {
-      GitHub: "https://github.com/bachrc"
+      GitHub: "https://github.com/bachrc",
     },
   }),
 }
@@ -25,13 +26,18 @@ export const defaultContentPageLayout: PageLayout = {
     Component.MobileOnly(Component.Spacer()),
     Component.Search(),
     Component.Darkmode(),
-    Component.DesktopOnly(Component.Explorer()),
+    Component.DesktopOnly(
+      Component.Explorer({
+        folderClickBehavior: "link",
+        filterFn: filterExplorerExclusions,
+      }),
+    ),
   ],
   right: [
     Component.Graph(),
     Component.DesktopOnly(Component.TableOfContents()),
     Component.Backlinks(),
-    Component.RecentNotes()
+    Component.RecentNotes(),
   ],
 }
 
@@ -43,7 +49,29 @@ export const defaultListPageLayout: PageLayout = {
     Component.MobileOnly(Component.Spacer()),
     Component.Search(),
     Component.Darkmode(),
-    Component.DesktopOnly(Component.Explorer()),
+    Component.DesktopOnly(
+      Component.Explorer({
+        folderClickBehavior: "link",
+        filterFn: filterExplorerExclusions,
+      }),
+    ),
   ],
   right: [],
+}
+
+function filterExplorerExclusions(node: FileNode): boolean {
+  // exclude files with the tag "explorerexclude"
+  if (node.file) {
+    // It's a file
+    return node.file?.frontmatter?.tags?.includes("explorerexclude") !== true
+  } else {
+    // It's a folder
+    let indexFile = node.children.find((node) => node.name === "index")
+
+    if (indexFile) {
+      return indexFile?.file?.frontmatter?.tags?.includes("explorerexclude") !== true
+    }
+
+    return true
+  }
 }
