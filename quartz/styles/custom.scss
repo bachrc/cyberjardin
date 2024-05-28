@@ -8,27 +8,41 @@ h4,
 h5,
 h6,
 thead {
-  font-weight: 300;
+  font-weight: 600;
 }
 
 .folder-container {
   & div > button > span {
-    font-weight: 300;
+    font-weight: 400;
   }
 }
 
 .content-meta {
-    margin-top: 0;
-    color: var(--gray);
-  
-    &[show-comma="true"] {
-      > span:not(:last-child) {
-        margin-right: 0;
-  
-        &::after {
-          content: ", ";
-        }
+  margin-top: 0;
+  color: var(--gray);
+
+  &[show-comma="true"] {
+    > span:not(:last-child) {
+      margin-right: 0;
+
+      &::after {
+        content: ", ";
       }
     }
   }
-  
+}
+
+p,
+ul,
+text,
+a,
+tr,
+td,
+li,
+ol,
+ul,
+.katex,
+.math {
+  hyphens: none;
+  text-align: justify;
+}
