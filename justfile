@@ -6,3 +6,6 @@ default:
 dev:
   npx quartz build --serve
 
+# Synchronizes the blog with Github, auto deploying it
+sync:
+  npx quartz sync

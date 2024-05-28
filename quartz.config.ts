@@ -12,12 +12,13 @@ const config: QuartzConfig = {
     enableSPA: true,
     enablePopovers: true,
     analytics: {
-      provider: "umami", websiteId: '32c68169-1b7c-46d0-ac8e-deed36b86600' 
+      provider: "umami",
+      websiteId: "32c68169-1b7c-46d0-ac8e-deed36b86600",
     },
     locale: "fr-FR",
     baseUrl: "jardin.cyberendroit.net",
     ignorePatterns: ["private", "templates", ".obsidian"],
-    defaultDateType: "modified",
+    defaultDateType: "created",
     theme: {
       fontOrigin: "googleFonts",
       cdnCaching: true,
