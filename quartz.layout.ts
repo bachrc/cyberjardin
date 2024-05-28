@@ -36,7 +36,7 @@ export const defaultContentPageLayout: PageLayout = {
   right: [
     Component.DesktopOnly(Component.TableOfContents()),
     Component.Backlinks(),
-    Component.RecentNotes({ showTags: false }),
+    // Component.RecentNotes({ showTags: false }), // will uncomment when fixing date problem
   ],
 }
 
