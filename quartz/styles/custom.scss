@@ -46,3 +46,18 @@ ul,
   hyphens: none;
   text-align: justify;
 }
+
+.page {
+  & article {
+    p,
+    ul,
+    text,
+    a,
+    li,
+    ol,
+    ul {
+      font-size: 1.1rem;
+      line-height: 2.2rem;
+    }
+  }
+}

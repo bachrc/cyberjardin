@@ -1,1 +1,1 @@
-Cette page explique comment se connecter à [[Bitwarden]]. Avec des images et tout. Pour le moment ça se met en place.
+Cette page expliquera comment se connecter à [[Bitwarden]], et est en construction actuellement.
