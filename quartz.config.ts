@@ -18,7 +18,7 @@ const config: QuartzConfig = {
     locale: "fr-FR",
     baseUrl: "jardin.cyberendroit.net",
     ignorePatterns: ["private", "templates", ".obsidian"],
-    defaultDateType: "created",
+    defaultDateType: "modified",
     theme: {
       fontOrigin: "googleFonts",
       cdnCaching: true,

@@ -1,4 +1,4 @@
-name: Deploy Quartz site to GitHub Pages
+name: Packaging du Cyber Jardin en une image Docker
 
 on:
   push:
