@@ -2,6 +2,7 @@
 tags:
   - tutoriel
   - ops
+date: 2024-06-05
 ---
 # Qu'allons-nous faire aujourd'hui
 ## Le contexte du souci
