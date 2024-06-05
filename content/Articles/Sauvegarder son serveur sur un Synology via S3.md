@@ -1,5 +1,7 @@
 ---
-draft: true
+tags:
+  - tutoriel
+  - ops
 ---
 # Qu'allons-nous faire aujourd'hui
 ## Le contexte du souci
@@ -38,7 +40,7 @@ Sauf que chez moi, bah ça marche pas.
 
 Cela a été ma solution pendant longtemps, mais j'ai toujours eu des soucis avec elle. Via NFS ou SMB, au bout de quelques jours... l'interface réseau de mon Raspberry Pi crashe. Impossible pour moi de le recontacter. Le redémarrer débloque les choses, mais au bout de quelques jours : rebelote. Et aucun log. Et pourtant ma config `fstab` est très très simple !
 
-J'ai vu quelques personnes avoir des soucis similaires avec le Raspberry Pi, mais aucune solution. C'aurait été une très bonne solution, et même si ce n'est pas la plus optimale, si vous arrivez à la faire fonctionner vous pouvez directement sauter à [[Sauvegarder son serveur sur un Synology via S3#Mettre en place la sauvegarde du serveur|la mise en place de la sauvegarde sur le serveur]] en spécifiant votre dossier réseau comme destination !
+J'ai vu quelques personnes avoir des soucis similaires avec le Raspberry Pi, mais aucune solution. C'aurait été une très bonne solution, et même si ce n'est pas la plus optimale, si vous arrivez à la faire fonctionner vous pouvez directement sauter à [[#Mettre en place la sauvegarde du serveur|la mise en place de la sauvegarde sur le serveur]] en spécifiant votre dossier réseau comme destination !
 
 Dans notre cas, nous allons nous pencher vers une autre solution, plus adaptée à notre cas d'usage.
 
@@ -180,41 +182,131 @@ zellij
 ```
 Et d'un coup boum, une étrange interface en terminal apparait.
 
-![[Zellij#Description]]
+![[Zellij#Description|Description]]
 
 Vous pouvez désormais agencer votre terminal comme vous le souhaitez. Et si vous souhaitez faire en sorte que [[Zellij]] se lance automatiquement lors de votre connexion SSH sur le NAS, [[Zellij#Démarrage auto lors d'une connexion SSH|j'ai consigné ici comment le paramétrer]].
 
 ## Démarrer Garage
-### Configuration du logiciel
-![[Garage#Démarrage Rapide]]]
 
+> [!tip] Petite astuce
+> Par la suite, nous allons démarrer Garage en tâche de fond. Je vous conseille de vous munir dès maintenant de [[Zellij]] afin qu'il puisse fonctionner dans une tuile à droite, et que nous puissions effectuer nos commandes dans une tuile à gauche 😄 Ne quittez pas [[Zellij]] après ça, mais **détachez-vous** de la session.
 
-```
-- Se connecter à Synology en SSH avec vos identifiants
-- Télécharger les utilitaires nécessaires, étant donné que les gestionnaires de paquets ne sont pas disponibles
-	- Télécharger les binaires de zellij, just et garage dans `~/.local/bin`
-	- Mettre ce chemin dans le path via le `.profile`
-- Créer un dossier partagé via l'interface, avec les paramètres de réplication que vous souhaitez
-- Aller dans le dossier partagé (ex: `/volume1/garage`) et y créer
-	- Un dossier vide data
-	- Un dossier vide conf
-	- Un fichier texte nommé `justfile`
-- Suivre les instructions du quickstart de garage : https://garagehq.deuxfleurs.fr/documentation/quick-start/
-- Création du justfile pour ne pas oublier les commandes
-- Y joindre les commandes pour créer les clés etc. 
-```
+![[Garage#Démarrage Rapide]]
+
+Vous avez maintenant un bucket compatible S3 sur votre Synology, et un couple de clés prêt à l'emploi afin d'y déverser vos données de sauvegarde !
+
+## Ajout d'un fichier justfile (facultatif)
+Afin de ne pas oublier toutes les commandes que nous venons de rentrer, et également afin de pouvoir les réutiliser facilement, nous pouvons utiliser [[Just]], que nous avons précédemment téléchargé.
+
+![[Just#Description|Description de Just]]
+
+Afin de pouvoir réutiliser les commandes que nous venons de voir, vous pouvez créer un fichier `justfile` dans notre dossier `/volume1/garage` et y renseigner le contenu suivant:
+
+![[Garage#Fichier justfile]]
+
+Maintenant tout est prêt ! Il ne nous reste plus qu'à sauvegarder notre serveur.
 
 # Mettre en place la sauvegarde du serveur
+Nous ne devrions plus toucher à notre Synology pour le moment. Maintenant, il va s'agir de sauvegarder de manière récurrente le contenu de notre serveur.
+
+Autorestic est un logiciel de sauvegarde s'appuyant sur restic. Sa valeur ajoutée, c'est de définir dans un fichier YAML le dossier source à sauvegarder, la destination de la sauvegarde, mais également la fréquence de ces dernières.
+
+>[!info] Pour la suite du tutoriel
+>Nous partirons du principe que vous savez comment vous connecter à votre serveur (j'espère), et que le dossier que vous souhaitez sauvegarder se trouve au chemin suivant : `/home/michelle/services`
+
+### Téléchargement d'Autorestic
+Sur votre serveur, je vous invite à suivre la [documentation officielle d'autorestic](https://autorestic.vercel.app/installation), et d'utiliser la manière qui convient le plus à votre serveur (la suite de cet article partira du principe que vous n'utilisez pas autorestic via leur image Docker)
+
+### Configuration d'Autorestic
+La configuration d'autorestic se situe dans deux fichiers distincts :
+- `.autorestic.yml` : le fichier de configuration
+- `.autorestic.env` : les variables d'environnement fournies à autorestic, contenant les mots de passe et clés secrètes 
+Il est possible de mettre vos clés secrètes directement dans le fichier YAML, mais si vous souhaitez versioner vos fichiers de configuration, c'est très recommandé de séparer les deux, et surtout de ne jamais "commit" votre fichier `.autorestic.env`.
+
+Ces deux fichiers doivent se situer dans le même dossier.
+
+Voici le contenu du fichier `.autorestic.yml` :
+```yml title=".autorestic.yml"
+version: 2
+
+locations:
+  services:
+    from: /home/michelle/services
+    to: synology
+    cron: '0 3 * * *'
+
+backends:
+  synology:
+    type: s3
+    path: 'http://<ip_de_votre_nas>:3900/backup-bucket'
 ```
-- Sur le serveur, y installer autorestic
-- Remplir le YAML
-- Faire un `.autorestic.env` qui contient les données sensibles
-- Faire un autorestic check voir si c'est ok
-- Faire un autorestic backup pour s'assurer que tout est ok
-- Mettre en place la cron qui va taper sur `autorestic cron` pour lancer le backup
+
+Le contenu du fichier est très simple : nous sauvegardons tous les jours à 3 heures du matin le dossier `/home/michelle/services` vers la destination `synology`. `synology`, comme type de destination, c'est un type `s3`, et voici son URL, contenant le bucket de destination.
+
+Il ne nous reste plus qu'à consigner les valeurs secrètes dans le fichier `.autorestic.env`. Vous y renseignerez également votre clé de chiffrement pour ne pas stocker votre sauvegarde en clair sur votre bucket Synology. Malinx le lynx.
+
+```env title=".autorestic.env"
+AUTORESTIC_SYNOLOGY_RESTIC_PASSWORD=<mot_de_passe_a_ne_pas_oublier>
+AUTORESTIC_SYNOLOGY_AWS_ACCESS_KEY_ID=<votre_access_key>
+AUTORESTIC_SYNOLOGY_AWS_SECRET_ACCESS_KEY=<votre_secret_key>
 ```
-# La voie est sécurisée !
+
+Il ne vous reste plus qu'à voir si la config est correcte.
+
+```sh
+autorestic -c <chemin_vers_votre_config>/.autorestic.yml check
 ```
-- Le serveur sera backup tout seul comme un grand
-- La prochaine fois, je montrerai comment j'organise mon raspi à base de `compose.yaml` imbriqués
+
+Tout est au vert ? Si non toutes mes condoléances, vous pouvez me contacter si vous avez des questions, mais si tout est bon, vous pouvez lancer votre premier backup !
+
+```sh
+autorestic -c <chemin_vers_votre_config>/.autorestic.yml backup
 ```
+
+Et pof, tout le contenu de votre dossier se fait sauvegarder comme par magie.
+
+Et vous savez ce qui est encore **plus** génial ? 
+
+La prochaine fois que vous lancerez une sauvegarde, restic ne sauvegardera pas l'intégralité de votre dossier une deuxième fois, mais **uniquement la différence**. Ce qui est un gain de place monstrueux.
+
+## Sauvegarde périodique
+Dans notre fichier de configuration, nous avons spécifié à un moment donné que nous souhaitions une sauvegarde tous les jours à 3 heures du matin. Et là, on en a pas encore vu la couleur. J'y viens.
+
+Autorestic dispose d'une commande `cron`, qui s'assure que la sauvegarde n'est pas effectuée plus souvent que consigné. Si vous exécutez la commande suivante :
+
+```sh
+
+# Si vous n'avez pas exécuté la sauvegarde après 3 heures du matin aujourd'hui, la commande suivante exécute une sauvegarde
+autorestic -c <chemin_vers_votre_config>/.autorestic.yml cron
+
+# Re-exécutez cette même commande, et elle ne s'exécutera pas
+autorestic -c <chemin_vers_votre_config>/.autorestic.yml cron
+```
+
+Vous pouvez exécuter la commande `cron` toutes les minutes si vous le souhaitez, tant que votre condition `cron` définie dans votre `.autorestic.yml` n'est pas valide, la sauvegarde ne s'exécutera pas.
+
+L'idée ? Créer une `crontab` qui exécute la commande toutes les heures. Ou toutes les 5 minutes. C'est vous qui voyez.
+
+Obtenez le chemin absolu vers le binaire d'autorestic
+
+```sh
+whereis autorestic
+```
+
+Créez donc une nouvelle règle cron avec la commande `crontab`
+
+```sh
+crontab -e
+```
+
+Et renseignez cette ligne, qui s'exécute toutes les heures.
+
+```
+  * 0  *   *   *     <dossier_contenant_le_binaire>/autorestic -c <dossier_contenant_votre_conf>/.autorestic.yml --ci cron
+```
+
+# C'est terminé !
+
+Et voilà ! Votre serveur sera désormais périodiquement sauvegardé vers votre Synology ! Vous avez également un bucket S3 que vous pourrez réutiliser afin d'être la destination de sauvegarde de toutes vos applications compatibles ! 
+
+Si vous avez la moindre question, vous pouvez me contacter via les moyens consignés sur mon site internet : https://bachrc.net
