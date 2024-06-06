@@ -1,12 +1,12 @@
 ---
 title: Apprenons Rust en TDD, et Archi Hexagonale (Partie 1)
-description: Le premier de la trilogie
 tags: dev,rust
 published: true
 publication_date: 2022-10-16T17:57:14+02:00
 pouet_url: https://mamot.fr/@pacha/109395508398437096
 date: 2022-02-21
 ---
+
 ## Introduction
 
 S'il s'agit d'un langage prometteur sur le papier, on peut se demander si Rust est utilisable dans le but de façonner un logiciel. Comment peut-on s'en servir ? Quels sont les apports de ce langage en termes d'outils permettant la création d'un logiciel lisible, propre et testé? Ce sont les questions qui vous traversent peut-être l’esprit, et sur lesquelles nous allons nous pencher dans cette série d'articles.
@@ -118,7 +118,7 @@ cargo test
 Le test passe ! Vous pouvez respirer, l'entropie de notre monde est préservée. Vous pouvez enlever le contenu de ce fichier.
 
 > [!example] Exemple
-> 
+>
 > <a href="https://github.com/bachrc/bienveillance-land/tree/a5129fcc14b8953122d6c03b3242376c0e4d0919">Cliquez ici pour consulter le code de cette étape</a>
 
 ### Quelle application désirons-nous ?
