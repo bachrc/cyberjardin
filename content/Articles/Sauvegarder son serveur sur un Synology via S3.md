@@ -108,7 +108,7 @@ Synology ne nous facilite pas la tâche, et ne nous permet pas d'utiliser un ges
 ![[Garage#Téléchargement]]
 
 
-### Mise à disposition des binaires
+### Mise à disposition de l'exécutable
 Afin de pouvoir y accéder depuis n'importe quel dossier dans le NAS, nous devons ajouter le chemin `~/.local/bin` dans la variable d'environnement `$PATH` de notre shell. Nous allons éditer le fichier `~/.profile` afin de le rajouter avec `vi` :
 
 ```bash
@@ -132,12 +132,8 @@ A partir de là, vous pouvez faire la commande suivante pour charger vos modific
 source ~/.profile
 ```
 
-C'est tout bon ! Nos outils sont désormais accessibles n'importe où dans notre serveur.
-
-Vous pouvez désormais agencer votre terminal comme vous le souhaitez. Et si vous souhaitez faire en sorte que [[Zellij]] se lance automatiquement lors de votre connexion SSH sur le NAS, [[Zellij#Démarrage auto lors d'une connexion SSH|j'ai consigné ici comment le paramétrer]].
-
+C'est tout bon ! Les binaires disponibles dans ce dossier sont désormais accessibles depuis n'importe quel endroit du serveur.
 ## Démarrer Garage
-
 ![[Garage#Démarrage Rapide]]
 
 Vous avez maintenant un bucket compatible S3 sur votre Synology, et un couple de clés prêt à l'emploi afin d'y déverser vos données de sauvegarde !
