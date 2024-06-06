@@ -63,21 +63,9 @@ Deux étapes afin d'y parvenir :
 
 # Ajouter un serveur S3 sur notre Synology
 
-Afin d'avoir une expérience de maintenance plus sympa sur notre NAS, nous allons utiliser d'autres outils :
-- Un multiplexeur de terminal : [[Zellij]].
-	- Il va nous permettre de lancer en tâche de fond notre serveur garage et d'observer plus facilement nos logs
-	- Vous pouvez également télécharger et utiliser le très connu `tmux` qui fonctionne sur les mêmes principes
-	- Si vous voulez aller plus loin, je vous invite à créer votre propre service qui se charge de lancer garage en tâche de fond. Ce qui permettra à Garage de se lancer même au démarrage du NAS. Si cela m'est demandé, je peux mettre à jour l'article
-- Un gestionnaire de commandes : `just`
-	- `just` est un outil se rapprochant de `make`, mais se voulant plus accessible et plus lisible.
-	- Il va nous permettre de consigner des commandes utiles et récurrentes, et de ne pas avoir à chercher des heures dans l'historique de notre bash parce qu'on a oublié comment on crée un bucket
-
-Sauf que Synology ne possède pas de gestionnaire de paquets accessible depuis le shell. Nous allons télécharger tous ces binaires nous même et les utiliser. En avant.
-
 > [!note] Note importante pour la suite
 > Cet article vous propose **une** manière de procéder, et non **la** manière de procéder. Vous n'êtes pas obligé•e d'utiliser tous les outils listés, vous pouvez utiliser d'autres solutions afin de sécuriser votre ~~habitat~~ serveur. 
 > 
-
 ## Création d'un dossier partagé
 Tout d'abord, je vous invite à créer, via l'interface de votre Synology, un dossier partagé qui sera dédié au stockage géré par Garage. 
 
@@ -114,39 +102,11 @@ ssh michelle@<votre-adresse-ip>
 
 Vous êtes désormais connecté•e sur votre serveur, il est maintenant l'heure de télécharger les outils nécessaires.
 
-### Téléchargement des outils nécessaires
-Comme spécifié plus haut, nous allons télécharger et utiliser `garage`, `zellij` et `just`. Ces outils sont disponibles sous forme de binaires, que nous allons télécharger et extraire vers un dossier `~/.local/bin`, que nous ajouterons au `$PATH` afin de l'utiliser partout.
+### Téléchargement de Garage
+Synology ne nous facilite pas la tâche, et ne nous permet pas d'utiliser un gestionnaire de paquet pour installer [[Garage]]. Ce n'est pas grave, il est disponible sous forme de binaire, que nous allons télécharger vers un dossier `~/.local/bin`, que nous ajouterons au `$PATH` afin de l'utiliser partout.
 
-```bash title="Shell sur votre Synology via SSH"
-# Créons le dossier de destination 
-mkdir -p ~/.local/bin
+![[Garage#Téléchargement]]
 
-# Créons des dossiers temporaires de téléchargement
-mkdir -p ~/tmp/{zellij,just,archives}
-
-# Dirigeons nous dans un dossier temporaire pour télécharger tranquillement nos archives
-cd ~/tmp/archives
-
-# Téléchargement de la dernière version de Zellij et extraction vers le bon dossier
-wget https://github.com/zellij-org/zellij/releases/latest/download/zellij-x86_64-unknown-linux-musl.tar.gz
-tar -xvf zellij*.tar.gz -C ~/tmp/zellij
-cp ~/tmp/zellij/zellij ~/.local/bin/zellij
-
-# Téléchargement de la version 1.27.0 de Just
-wget https://github.com/casey/just/releases/download/1.27.0/just-1.27.0-x86_64-unknown-linux-musl.tar.gz
-
-tar -xvf just*.tar.gz -C ~/tmp/just
-cp ~/tmp/just/just ~/.local/bin/just
-
-# Téléchargement de la version 1.0.0 de garage
-wget https://garagehq.deuxfleurs.fr/_releases/v1.0.0/x86_64-unknown-linux-musl/garage -O ~/.local/bin
-
-# Nettoyons tout notre bazar
-cd ~
-rm -rf ~/tmp
-```
-
-A ce niveau là, notre dossier `~/.local/bin` contient trois binaires : `zellij`, `just` et `garage`. 
 
 ### Mise à disposition des binaires
 Afin de pouvoir y accéder depuis n'importe quel dossier dans le NAS, nous devons ajouter le chemin `~/.local/bin` dans la variable d'environnement `$PATH` de notre shell. Nous allons éditer le fichier `~/.profile` afin de le rajouter avec `vi` :
@@ -174,38 +134,27 @@ source ~/.profile
 
 C'est tout bon ! Nos outils sont désormais accessibles n'importe où dans notre serveur.
 
-### Configuration de Zellij
-Comme spécifié auparavant, l'utilisation d'un multiplexeur est facultative. Surtout [[Zellij]] que j'utilise ici pour sa simplicité et son ergonomie, et ici comme solution de facilité afin de le faire tourner en tâche de fond même après ma déconnexion. 
-
-Vous pouvez désormais lancer Zellij en utilisant la commande suivante :
-```sh
-zellij
-```
-Et d'un coup boum, une étrange interface en terminal apparait.
-
-![[Zellij#Description|Description]]
-
 Vous pouvez désormais agencer votre terminal comme vous le souhaitez. Et si vous souhaitez faire en sorte que [[Zellij]] se lance automatiquement lors de votre connexion SSH sur le NAS, [[Zellij#Démarrage auto lors d'une connexion SSH|j'ai consigné ici comment le paramétrer]].
 
 ## Démarrer Garage
-
-> [!tip] Petite astuce
-> Par la suite, nous allons démarrer Garage en tâche de fond. Je vous conseille de vous munir dès maintenant de [[Zellij]] afin qu'il puisse fonctionner dans une tuile à droite, et que nous puissions effectuer nos commandes dans une tuile à gauche 😄 Ne quittez pas [[Zellij]] après ça, mais **détachez-vous** de la session.
 
 ![[Garage#Démarrage Rapide]]
 
 Vous avez maintenant un bucket compatible S3 sur votre Synology, et un couple de clés prêt à l'emploi afin d'y déverser vos données de sauvegarde !
 
-## Ajout d'un fichier justfile (facultatif)
-Afin de ne pas oublier toutes les commandes que nous venons de rentrer, et également afin de pouvoir les réutiliser facilement, nous pouvons utiliser [[Just]], que nous avons précédemment téléchargé.
+## Astuces facultatives
 
-![[Just#Description|Description de Just]]
+### Lancer Garage en tâche de fond avec [[Zellij]]
+Actuellement, si vous lancez `garage server`, il sera actif dans votre terminal. Sitôt que vous fermerez votre terminal, [[Garage]] va se couper. Et non, laisser votre terminal constamment ouvert n'est pas une solution. 
 
-Afin de pouvoir réutiliser les commandes que nous venons de voir, vous pouvez créer un fichier `justfile` dans notre dossier `/volume1/garage` et y renseigner le contenu suivant:
+Une solution simple, rapide et bête comme chou serait d'utiliser [[Zellij]], un espace de travail dans le terminal qui vous permet d'avoir des onglets, des tuiles ré-organisables à souhait, et qui reste en tâche de fond. Vous pouvez suivre [[Zellij#Installation|ces instructions]] afin de l'installer sur votre Synology si vous le souhaitez.
 
-![[Garage#Fichier justfile]]
+### Centraliser les commandes utiles avec [[Just]]
+Afin de mettre en place [[Garage]], vous avez utilisé beaucoup de commandes afin d'interagir avec votre application. Dans deux semaines, quand vous reviendrez dessus, vous souviendrez-vous de la commande pour rattacher une clé à un bucket ? Si vous venez de me répondre "Oui", vous mentez mal. 
 
-Maintenant tout est prêt ! Il ne nous reste plus qu'à sauvegarder notre serveur.
+![[Just#Description]]
+
+Si cela vous intéresse, vous pouvez retrouver [[Just#Installation|les instructions d'installation ici]], et retrouver le fichier `Justfile` qui consigne les commandes importantes pour interagir avec [[Garage]] en vous rendant [[Garage#Fichier justfile|sur cette page]]. 
 
 # Mettre en place la sauvegarde du serveur
 Nous ne devrions plus toucher à notre Synology pour le moment. Maintenant, il va s'agir de sauvegarder de manière récurrente le contenu de notre serveur.

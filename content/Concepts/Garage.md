@@ -6,6 +6,18 @@ tags:
 # Description
 Garage est un logiciel open-source de stockage d'objet, distribué et compatible avec S3. Il est conçu pour l'auto-hébergement, et permet de la redondance avec d'autres serveurs.
 
+# Téléchargement
+Rendez-vous sur la [page officielle des téléchargements de Garage](https://garagehq.deuxfleurs.fr/download/), et copiez l'URL de téléchargement du binaire correspondant à votre architecture.
+
+Copiez l'URL de la release convenant à votre OS et architecture, et utilisez la dans les prochaines commandes.
+
+```sh
+# Création du dossier de destination s'il n'existe pas déjà
+mkdir -p ~/.local/bin
+
+# Téléchargement du binaire en y renseignant l'URL précédemment récoltée
+wget <votre_url> -O ~/.local/bin
+```
 # Démarrage Rapide
 
 ## Configuration initiale

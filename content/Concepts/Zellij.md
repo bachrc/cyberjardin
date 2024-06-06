@@ -15,6 +15,7 @@ Il est possible de s'y déplacer totalement au clavier, mais également d'intera
 Après utilisation, il est possible de se détacher d'une session, afin de quitter Zellij tout en gardant la session active en tâche de fond, même après déconnexion du serveur.
 
 ![[Pasted image 20240605140414.png|Exemple d'interface Zellij]]
+
 # Examples de commandes
 ## Raccourcis clavier
 
@@ -24,7 +25,27 @@ Après utilisation, il est possible de se détacher d'une session, afin de quitt
 | `Ctrl-T N` | Création d'un nouvel onglet                                     |
 | `Alt-➡️`   | Se déplacer vers la tuile de droite                             |
 | `Ctrl-O D` | Se détacher de la session (qui restera active en tâche de fond) |
+# Installation
+Vous pouvez obtenir l'URL de la dernière release via le lien suivant : https://github.com/zellij-org/zellij/releases/latest
 
+Copiez l'URL du `.tar.gz` convenant à votre OS et architecture, et utilisez la dans les prochaines commandes.
+
+```sh
+# Création du dossier de destination s'il n'existe pas déjà
+mkdir -p ~/.local/bin
+
+# Création d'un dossier temporaire pour ne rien salire
+mkdir -p ~/tmp/{zellij,archive}
+cd ~/tmp/archive
+
+# Téléchargement de la dernière version de Zellij et extraction vers le bon dossier
+wget <url_de_votre_tar_gz>
+tar -xvf zellij*.tar.gz -C ~/tmp/zellij
+cp ~/tmp/zellij/zellij ~/.local/bin/zellij
+
+# Et on nettoie
+rm -rf ~/tmp
+```
 # Astuces
 ## Démarrage auto lors d'une connexion SSH
 Afin de démarrer Zellij automatiquement, et le faire se rattacher à la dernière session active, éditez le fichier `~/.profile` du serveur en question, et rajoutez les lignes suivantes à la fin du fichier :
