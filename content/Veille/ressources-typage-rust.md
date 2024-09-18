@@ -1,5 +1,5 @@
 ---
-title: "Articles sur l'architecture hexa en Rust
+title: "Articles sur l'architecture hexa en Rust"
 ---
 
 Je sauvegarde ici ces quelques articles autour du typage
